@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="uk">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Форма + Таблиця 6×6</title>
+  <style>
+    :root{ --accent:#0d75c2; --ok:#1aa36f; --bad:#d64d4d; --surface:#f6f7fb; --card:#fff; --muted:#777; }
+    *{box-sizing:border-box}
+    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial;background:var(--surface);margin:0;padding:24px;color:#111}
+    h1{margin:0 0 10px}
+    .grid{display:grid;grid-template-columns:1.1fr .9fr;gap:28px;align-items:start}
+    .card{background:var(--card);border:1px solid #e4e6ee;border-radius:16px;padding:20px 18px;box-shadow:0 1px 2px rgba(0,0,0,.04)}
+    .card h2{margin:0 0 14px}
+    label{display:block;font-weight:600;margin:12px 0 6px}
+    input[type="text"],input[type="tel"],input[type="number"]{
+      width:100%;padding:12px 14px;border:1px solid #cfd3df;border-radius:10px;outline:none;background:#fff;
+      transition:border-color .15s, box-shadow .15s}
+    input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(13,117,194,.12)}
+    .row{display:grid;grid-template-columns:1fr 160px;gap:12px;align-items:end}
+    .helper{font-size:.9rem;color:var(--muted)}
+    .error{border-color:var(--bad)!important;box-shadow:0 0 0 3px rgba(214,77,77,.12)!important}
+    .msg{margin-top:8px;font-size:.9rem}
+    .msg.bad{color:var(--bad)} .msg.ok{color:var(--ok)}
+    .actions{display:flex;gap:10px;margin-top:16px}
+    button{appearance:none;border:0;cursor:pointer;padding:12px 16px;border-radius:12px;font-weight:700;background:var(--accent);color:#fff}
+    button.secondary{background:#eef3f8;color:#0b4577}
+    .preview p{margin:.35rem 0} .preview b{font-weight:700}
+    .bar{height:18px;border:3px solid #9fc3df;border-radius:8px;background:#0d75c2;margin:10px 0 16px}
+    .table-wrap{margin-top:8px}
+    table{width:100%;border-collapse:separate;border-spacing:0;table-layout:fixed;user-select:none}
+    td{border:2px solid #2f2f2f;height:52px;text-align:center;font-weight:700;background:#fff;cursor:default}
+    td[data-target="true"]{outline:3px solid #b97cff;outline-offset:-3px}
+    .palette{display:flex;gap:12px;align-items:center;margin:6px 0 12px}
+    .palette input[type="color"]{width:48px;height:36px;border:1px solid #cfd3df;border-radius:10px;padding:0}
+    .hint{font-size:.92rem;color:var(--muted)}
+  </style>
+</head>
+<body>
+<h1>Перевірка форми + інтерактивна таблиця</h1>
+
+<div class="grid">
+  <!-- Форма -->
+  <section class="card">
+    <h2>Форма для заповнення</h2>
+    <form id="infoForm" novalidate>
+      <label for="fio">ПІБ (формат: Прізвище І.І.)</label>
+      <input id="fio" name="fio" type="text" placeholder="Шевченко Д.В." autocomplete="name" />
+      <div class="helper">Починається з великої літери, ініціали з крапками.</div>
+
+      <div class="row">
+        <div>
+          <label for="variant">Варіант (1–36) = номер клітинки</label>
+          <input id="variant" name="variant" type="number" inputmode="numeric" min="1" max="36" placeholder="23" />
+        </div>
+        <div>
+          <label for="faculty">Факультет (TT-ЧЧ)</label>
+          <input id="faculty" name="faculty" type="text" placeholder="TT-23" />
+        </div>
+      </div>
+
+      <label for="phone">Телефон (автомаска: (XXX)-XXX-XX-XX)</label>
+      <input id="phone" name="phone" type="tel" placeholder="(099)-369-12-51" />
+
+      <label for="city">Місто</label>
+      <input id="city" name="city" type="text" placeholder="Київ" />
+
+      <div class="actions">
+        <button type="submit">Підтвердити</button>
+        <button class="secondary" type="button" id="clearBtn">Очистити</button>
+      </div>
+      <div id="formMsg" class="msg"></div>
+    </form>
+  </section>
+
+  <!-- Попередній перегляд -->
+  <aside class="card preview">
+    <h2>Введені дані</h2>
+    <div id="previewBox">
+      <p><b>ПІБ:</b> —</p>
+      <p><b>Варіант:</b> —</p>
+      <p><b>Факультет:</b> —</p>
+      <p><b>Телефон:</b> —</p>
+      <p><b>Місто:</b> —</p>
+    </div>
+  </aside>
+</div>
+
+<!-- Палітра -->
+<section class="card" style="margin-top:22px">
+  <h2>Керування кольорами для таблиці</h2>
+  <div class="palette">
+    <label for="pick">Палітра:</label>
+    <input id="pick" type="color" value="#7c4dff" />
+    <span class="hint">Клік по активній клітинці фарбує її у вибраний колір. Подвійний клік — одна з 10 дій.</span>
+  </div>
+  <div class="bar"></div>
+  <div id="variantHint" class="hint">Уведіть «Варіант» (1–36) — це номер клітинки.</div>
+</section>
+
+<!-- Таблиця -->
+<section class="card table-wrap">
+  <h2>Таблиця 6×6</h2>
+  <table id="grid"></table>
+</section>
+
+<!-- Підключаємо всю логіку -->
+<script src="data.js"></script>
+</body>
+</html>
